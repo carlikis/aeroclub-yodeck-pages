@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Panel LEAL - Glass Cockpit</title>
+<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&family=Roboto+Mono:wght@500;700&display=swap" rel="stylesheet">
+<style>
+    /* VARIABLES DE COLOR AERONÁUTICO */
+    :root {
+        --bg-color: #0c151c; /* Azul oscuro casi negro */
+        --primary-data: #12ff80; /* Verde lima (Datos METAR/TAF) */
+        --secondary-data: #00e0ff; /* Cian (Hora) */
+        --label-color: #7997b6; /* Gris claro para etiquetas */
+        --border-color: #2c3a47; /* Borde de contenedor */
+    }
+
+    body {
+        margin: 0;
+        /* Fondo con gradiente sutil para efecto de panel */
+        background: radial-gradient(circle at 50% 120%, var(--bg-color) 0%, #03080b 100%);
+        color: var(--secondary-data);
+        font-family: 'Roboto', sans-serif; /* Fuente principal legible */
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+        align-items: flex-start;
+        height: 100vh;
+        padding: 3vw;
+        gap: 3vw;
+    }
+
+    /* CONTENEDORES DE DATOS */
+    .panel-box {
+        background-color: #1a252e4d;
+        border: 1px solid var(--border-color);
+        border-radius: 6px;
+        padding: 2vw;
+        box-shadow: 0 0 15px rgba(0, 224, 255, 0.15); 
+        display: flex;
+        flex-direction: column;
+    }
+
+    /* CONTENEDOR DE HORA Y FECHA */
+    .clock-section {
+        width: 30%;
+        min-width: 300px;
+        position: sticky;
+        top: 3vw;
+    }
+
+    .time-group {
+        margin-bottom: 3vw;
+        padding-bottom: 2vw;
+        border-bottom: 1px dashed var(--border-color);
+    }
+    .time-group:last-child {
+        border-bottom: none;
+        margin-bottom: 0;
+    }
+
+    .label {
+        font-size: 1.1vw;
+        color: var(--label-color);
+        margin-bottom: 0.5vw;
+        text-transform: uppercase;
+        letter-spacing: 0.1em;
+        font-weight: 700;
+    }
+
+    /* CAMBIO CLAVE: Usamos Roboto Mono, más técnico y legible que Orbitron */
+    .time {
+        font-family: 'Roboto Mono', monospace; 
+        font-size: 5vw;
+        font-weight: 700;
+        line-height: 1;
+        color: var(--secondary-data);
+        text-shadow: 0 0 10px rgba(0, 224, 255, 0.5);
+    }
+
+    .date {
+        font-size: 1.5vw;
+        color: var(--label-color);
+        margin-top: 0.5vw;
+    }
+
+    /* CONTENEDOR DE METAR/TAF */
+    .metar-taf-section {
+        width: 65%;
+    }
+
+    .metar-taf-group {
+        margin-bottom: 2.5vw;
+    }
+
+    .metar-title {
+        font-size: 1.8vw;
+        color: var(--primary-data);
+        text-transform: uppercase;
+        margin-bottom: 1vw;
+        border-left: 5px solid var(--primary-data);
+        padding-left: 10px;
+        font-weight: 700;
+    }
+
+    .metar, .taf {
+        font-size: 2.2vw;
+        white-space: pre-wrap;
+        line-height: 1.4;
+        background-color: #080f14;
+        padding: 1.5vw;
+        border-radius: 4px;
+        color: var(--primary-data); 
+        border: 1px solid rgba(18, 255, 128, 0.3);
+        /* Usamos Roboto Mono también para el código METAR/TAF para alineación perfecta */
+        font-family: 'Roboto Mono', monospace; 
+    }
+    
+    /* ELIMINADO: Se ha quitado la clase .footer-icao que contenía la referencia al proxy. */
+</style>
+</head>
+<body>
+    <div class="panel-box clock-section">
+        <div class="time-group">
+            <div class="label">Hora Local (LT)</div>
+            <div id="localTime" class="time">--:--:--</div>
+            <div id="localDate" class="date">--/--/--</div>
+        </div>
+
+        <div class="time-group">
+            <div class="label">Hora Zulu (UTC)</div>
+            <div id="utcTime" class="time">--:--:-- UTC</div>
+            <div id="utcDate" class="date">--/--/--</div>
+        </div>
+    </div>
+
+    <div class="panel-box metar-taf-section">
+        <div class="metar-taf-group">
+            <div class="metar-title">METAR LEAL</div>
+            <div id="metar" class="metar">Cargando METAR...</div>
+        </div>
+
+        <div class="metar-taf-group">
+            <div class="metar-title">TAF LEAL</div>
+            <div id="taf" class="taf">Cargando TAF...</div>
+        </div>
+    </div>
+
+<script>
+// La URL base de tu Worker de Cloudflare
+const CF_WORKER_BASE_URL = "https://wild-queen-2ab2.carlikisua.workers.dev/"; 
+
+function updateClocks() {
+    const now = new Date();
+    const optionsDate = { weekday: 'short', day: '2-digit', month: 'short', year: 'numeric' };
+
+    // 1. Local (Europe/Madrid)
+    const local = new Date(now.toLocaleString("en-US", { timeZone: "Europe/Madrid" }));
+    document.getElementById("localTime").textContent = local.toLocaleTimeString('es-ES', { hour12: false, hour: '2-digit', minute: '2-digit', second: '2-digit' });
+    document.getElementById("localDate").textContent = local.toLocaleDateString('es-ES', optionsDate);
+
+    // 2. UTC (Zulu)
+    const utcTime = now.toUTCString().substring(17, 25);
+    const utcDate = now.toUTCString().substring(0, 16);
+    document.getElementById("utcTime").textContent = utcTime + " UTC";
+    document.getElementById("utcDate").textContent = utcDate;
+}
+
+async function loadData() {
+    const metarUrl = `${CF_WORKER_BASE_URL}?icao=LEAL&type=metar`;
+    const tafUrl = `${CF_WORKER_BASE_URL}?icao=LEAL&type=taf`;
+
+    try {
+        const [metarResp, tafResp] = await Promise.all([
+            fetch(metarUrl), 
+            fetch(tafUrl)
+        ]);
+        
+        const metarText = await metarResp.text();
+        const tafText = await tafResp.text();
+
+        document.getElementById("metar").textContent = metarText.trim() || "METAR no disponible";
+        document.getElementById("taf").textContent = tafText.trim() || "TAF no disponible";
+    } catch (e) {
+        document.getElementById("metar").textContent = "ERROR: Fallo de conexión.";
+        document.getElementById("taf").textContent = "ERROR: Fallo de conexión.";
+    }
+}
+
+// INICIO DEL SCRPIT
+updateClocks();
+setInterval(updateClocks, 1000);
+loadData();
+setInterval(loadData, 10 * 60 * 1000); // refrescar datos cada 10 minutos
+</script>
+</body>
+</html>
