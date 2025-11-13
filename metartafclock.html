@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Panel LEAL</title>
+<style>
+  body {
+    margin: 0;
+    background-color: #101820;
+    color: #00b2ff;
+    font-family: "Montserrat", sans-serif;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    height: 100vh;
+    padding: 0 4vw;
+  }
+
+  .clock-container, .metar-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+
+  .label {
+    font-size: 1vw;
+    color: #6fc3ff;
+    margin-bottom: 0.2vw;
+    text-transform: uppercase;
+  }
+
+  .time {
+    font-size: 3vw;
+    font-weight: 600;
+  }
+
+  .date {
+    font-size: 1.2vw;
+    color: #9ed8ff;
+    margin-bottom: 1vw;
+  }
+
+  .metar-container {
+    text-align: right;
+    max-width: 60%;
+  }
+
+  .metar-title {
+    font-size: 1.4vw;
+    color: #6fc3ff;
+    text-transform: uppercase;
+    margin-bottom: 0.5vw;
+  }
+
+  .metar, .taf {
+    font-size: 2.2vw;
+    white-space: pre-wrap;
+    color: #9ed8ff;
+    line-height: 1.3;
+    margin-bottom: 1vw;
+  }
+</style>
+</head>
+<body>
+  <div class="clock-container">
+    <div class="label">Hora local (LT)</div>
+    <div id="localTime" class="time"></div>
+    <div id="localDate" class="date"></div>
+
+    <div class="label">Hora UTC</div>
+    <div id="utcTime" class="time"></div>
+    <div id="utcDate" class="date"></div>
+  </div>
+
+  <div class="metar-container">
+    <div class="metar-title">METAR LEAL</div>
+    <div id="metar" class="metar">Cargando METAR...</div>
+
+    <div class="metar-title">TAF LEAL</div>
+    <div id="taf" class="taf">Cargando TAF...</div>
+  </div>
+
+<script>
+function updateClocks() {
+  const now = new Date();
+  const optionsDate = { weekday: 'short', day: '2-digit', month: 'short', year: 'numeric' };
+
+  // Local (Europe/Madrid)
+  const local = new Date(now.toLocaleString("en-US", { timeZone: "Europe/Madrid" }));
+  document.getElementById("localTime").textContent = local.toLocaleTimeString('es-ES', { hour12: false, hour: '2-digit', minute: '2-digit', second: '2-digit' });
+  document.getElementById("localDate").textContent = local.toLocaleDateString('es-ES', optionsDate);
+
+  // UTC
+  document.getElementById("utcTime").textContent = now.toUTCString().substring(17, 25) + " UTC";
+  document.getElementById("utcDate").textContent = now.toUTCString().substring(0, 16);
+}
+
+async function loadData() {
+  const base = "https://wild-queen-2ab2.carlikisua.workers.dev/"; // ← tu Worker de Cloudflare
+  const metarUrl = `${base}/?icao=LEAL&type=metar`;
+  const tafUrl = `${base}/?icao=LEAL&type=taf`;
+
+  try {
+    const [metarResp, tafResp] = await Promise.all([fetch(metarUrl), fetch(tafUrl)]);
+    const metarText = await metarResp.text();
+    const tafText = await tafResp.text();
+    document.getElementById("metar").textContent = metarText.trim() || "METAR no disponible";
+    document.getElementById("taf").textContent = tafText.trim() || "TAF no disponible";
+  } catch (e) {
+    document.getElementById("metar").textContent = "Error obteniendo METAR";
+    document.getElementById("taf").textContent = "Error obteniendo TAF";
+  }
+}
+
+updateClocks();
+setInterval(updateClocks, 1000);
+loadData();
+setInterval(loadData, 10 * 60 * 1000); // refrescar cada 10 minutos
+</script>
+</body>
+</html>
