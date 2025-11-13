@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tablero de Anuncios - Aeroclub LEMU</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;700;900&display=swap" rel="stylesheet">
+    <style>
+        /* VARIABLES DE COLOR PARA ANUNCIOS */
+        :root {
+            --bg-dark: #1e1e2d;
+            --header-color: #f8f8f8; /* Blanco brillante para la cabecera */
+            --header-bg: #3b5998; /* Azul corporativo */
+            --card-bg: #2b2b40;
+            --event-color: #00e0ff; /* Cian para Eventos */
+            --alert-color: #ffc107; /* Amarillo/Ámbar para Avisos */
+            --urgent-color: #f5554b; /* Rojo para Urgente/Cierres */
+            --text-light: #f8f8f8;
+            --text-muted: #aaaaaa;
+        }
+
+        body {
+            font-family: 'Roboto', sans-serif;
+            background-color: var(--bg-dark);
+            color: var(--text-light);
+            margin: 0;
+            padding: 0;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden; /* Evitar scroll */
+        }
+        .container {
+            width: 95%;
+            margin: 0 auto;
+            padding: 1vw 0;
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* CABECERA */
+        header {
+            background-color: var(--header-bg);
+            color: var(--header-color);
+            padding: 1.5vw 0;
+            text-align: center;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.4);
+        }
+        header h1 {
+            margin: 0;
+            font-size: 2.5vw;
+            font-weight: 900;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+        }
+
+        /* TABLERO DE ANUNCIOS */
+        .announcement-grid {
+            flex-grow: 1;
+            display: grid;
+            /* Tres columnas para el contenido principal */
+            grid-template-columns: repeat(3, 1fr); 
+            gap: 2vw;
+            padding: 2vw 0;
+        }
+
+        /* TARJETA BASE */
+        .announcement-card {
+            background-color: var(--card-bg);
+            padding: 1.5vw;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+        .announcement-card h2 {
+            font-size: 1.8vw;
+            font-weight: 900;
+            margin-top: 0;
+            padding-bottom: 0.5vw;
+            border-bottom: 3px solid;
+            letter-spacing: 0.05em;
+        }
+        .announcement-card p {
+            font-size: 1.2vw;
+            line-height: 1.4;
+            margin-bottom: 0.5vw;
+        }
+        .announcement-card strong {
+            font-weight: 700;
+            color: var(--text-light);
+        }
+
+        /* ESTILOS POR CATEGORÍA */
+        .event h2 {
+            color: var(--event-color);
+            border-bottom-color: var(--event-color);
+        }
+        .notice h2 {
+            color: var(--alert-color);
+            border-bottom-color: var(--alert-color);
+        }
+        .urgent {
+            background-color: var(--urgent-color);
+            color: white;
+            box-shadow: 0 5px 20px rgba(245, 85, 75, 0.6);
+            /* La tarjeta urgente ocupa DOS columnas para destacar */
+            grid-column: 1 / span 2; 
+        }
+        .urgent h2 {
+            color: white;
+            border-bottom-color: white;
+            font-size: 2.5vw;
+        }
+        .urgent p {
+            font-size: 1.5vw;
+        }
+
+        /* TARJETA LATERAL DE CONTACTO/MEMBRESÍA */
+        .sidebar-card {
+            grid-column: 3 / 4;
+            background-color: #1a252e;
+            padding: 2vw;
+            border-left: 5px solid var(--event-color);
+            text-align: center;
+        }
+        .sidebar-card h3 {
+            font-size: 1.5vw;
+            color: var(--event-color);
+            margin-top: 0;
+        }
+        .sidebar-card .contact-info {
+            font-size: 1.1vw;
+            padding-top: 1vw;
+            border-top: 1px dashed var(--text-muted);
+        }
+        .contact-info p {
+            margin: 0.5vw 0;
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>REAL AEROCLUB DE ALICANTE TABLERO DE ANUNCIOS</h1>
+    </header>
+
+    <div class="container">
+        <div class="announcement-grid">
+
+            <div class="announcement-card urgent">
+                <div>
+                    <h2>⚠️ ¡HOJAS DE REPOSTAJE!</h2>
+                    <p>Se recuerda a nuestros socios/as la obligatoriedad de <strong>FIRMAR</strong> los partes de combustible tras cada repostaje.</p>
+                    <p hidden>Rogamos disculpen las molestias.</p>
+                </div>
+                <p hidden style="text-align: right; font-size: 1.1vw; opacity: 0.8;">** Servicio de vending disponible 24/7 **</p>
+            </div>
+
+            <div class="announcement-card event">
+                <div>
+                    <h2>✈️ FIESTA DE LA PATRONA 2025</h2>
+                    <p>El próximo 13 de diciembre celebraremos la <strong>"Fiesta de la Patrona 2025"</strong> a partir de las 09:30h.</p>
+                    <p>Entre otros eventos podrás disfrutar de vuelos de divulgación aeronáutica, exposición estática de nuestro avión Bücker, degustación de paella ....</p>
+                </div>
+                <p style="font-weight: 700; color: var(--event-color); font-size: 1.3vw;">¡Bienvenidos todos los visitantes!</p>
+            </div>
+            
+            <div class="announcement-card notice">
+                <div>
+                    <h2>📚 CURSOs PPL(A) y ULM</h2>
+                    <p>Despega tu sueño de volar en nuestra escuela <strong>PPL y ULM</strong>.</p>
+                    <p>Obtén tu licencia de Piloto Privado (PPL) o Piloto de Ultraligero (ULM) y empieza a pilotar. ¡Inscríbete hoy y surca los cielos. Contacte con Secretaría para más detalles.</p>
+                </div>
+                <p style="font-weight: 700; color: var(--alert-color); font-size: 1.3vw;">** Últimas Plazas **</p>
+            </div>
+
+            <div class="announcement-card sidebar-card">
+                <h3>CONTACTO Y SOCIOS</h3>
+                <p>¿Interesado en hacerte socio, aprender a volar o realizar tu bautismo de vuelo? </p>
+                <div class="contact-info">
+                    <p>📞 **Secretaría:** 965 95 0882</p>
+                    <p>📧 **Email:** info@aeroclubalicante.com</p>
+                    <p style="margin-top: 1.5vw;">Sigue nuestras redes sociales para estar al día de los eventos.</p>
+                </div>
+            </div>
+
+            <div class="announcement-card event">
+                <div>
+                    <h2>🍽️ CENA DE SOCIOS</h2>
+                    <p>Recuerda inscribirte a la cena anual de socios del aeroclub. Tendrá lugar el <strong>25 de NOVIEMBRE</strong> a las 21:00h.</p>
+                </div>
+                <p>Confirma asistencia antes del 15 de Noviembre.</p>
+            </div>
+
+        </div>
+    </div>
+
+</body>
+</html>
