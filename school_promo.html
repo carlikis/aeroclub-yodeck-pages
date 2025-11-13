@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cursos Oficiales - Aeroclub LEMU</title>
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Roboto:wght@300;400;700;900&display=swap" rel="stylesheet">
+    <style>
+        /* VARIABLES DE COLOR PROFESIONAL */
+        :root {
+            --bg-dark: #1e1e2d; 
+            --header-color: #ffffff; 
+            --header-bg: #3b5998; 
+            --card-bg-light: #f8f8f8;
+            --card-text-dark: #333;
+            --highlight-blue: #00bfff; /* Cian para PPL */
+            --highlight-green: #28a745; /* Verde para ULM */
+        }
+
+        body {
+            font-family: 'Roboto', sans-serif;
+            background-color: var(--bg-dark);
+            color: var(--card-text-dark);
+            margin: 0;
+            padding: 0;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+        .container {
+            width: 90%;
+            margin: 0 auto;
+            padding: 2vw 0;
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        /* CABECERA Y LEMA */
+        header {
+            background-color: var(--header-bg);
+            color: var(--header-color);
+            padding: 1.5vw 0;
+            text-align: center;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.4);
+        }
+        header h1 {
+            margin: 0;
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 4.5vw; 
+            letter-spacing: 0.2em;
+        }
+        header p {
+            margin: 0;
+            font-size: 1.8vw;
+            font-weight: 300;
+        }
+
+        /* GRID DE CURSOS: AHORA SOLO 2 COLUMNAS */
+        .course-grid {
+            flex-grow: 1;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 4vw;
+            padding-top: 3vw;
+        }
+
+        /* TARJETA DE CURSO */
+        .course-card {
+            background-color: var(--card-bg-light);
+            border-radius: 12px;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4);
+            padding: 2.5vw;
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+        
+        .icon-container {
+            font-size: 6vw;
+            margin-bottom: 0.5vw;
+            line-height: 1;
+        }
+
+        .course-card h2 {
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 4vw;
+            margin: 0.5vw 0 1.5vw 0;
+            padding-bottom: 0.8vw;
+            border-bottom: 5px solid;
+        }
+        
+        .course-card .description {
+            font-size: 1.5vw;
+            line-height: 1.4;
+            margin-bottom: 1.5vw;
+            flex-grow: 1;
+        }
+        .course-card strong {
+            font-weight: 700;
+        }
+
+        .cta-button {
+            display: block;
+            background-color: #3b5998;
+            color: white;
+            padding: 1.2vw 0;
+            border-radius: 5px;
+            font-size: 2vw;
+            font-weight: 900;
+            margin-top: 2vw;
+        }
+        
+        /* ESTILOS ESPECÍFICOS DE COLOR */
+        .ppl .icon-container { color: var(--highlight-blue); }
+        .ppl h2 { color: var(--highlight-blue); border-bottom-color: var(--highlight-blue); }
+        .ppl .cta-button { background-color: var(--highlight-blue); }
+        
+        .ulm .icon-container { color: var(--highlight-green); }
+        .ulm h2 { color: var(--highlight-green); border-bottom-color: var(--highlight-green); }
+        .ulm .cta-button { background-color: var(--highlight-green); }
+
+
+        /* CONTACTO/INFORMACIÓN FINAL */
+        .contact-footer {
+            font-size: 1.8vw;
+            color: var(--text-light);
+            text-align: center;
+            padding: 1vw 0;
+            border-top: 2px solid var(--text-light);
+            width: 100%;
+        }
+        .contact-footer strong {
+            color: var(--highlight-blue);
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>CONVIÉRTETE EN PILOTO </h1>
+        <p>Escuela de vuelo del Real Aeroclub de Alicante.</p>
+    </header>
+
+    <div class="container">
+        <div class="course-grid">
+
+            <div class="course-card ppl">
+                <div class="icon-container">✈️</div>
+                <h2>PILOTO PRIVADO (PPL)</h2>
+                <div class="description">
+                    <p>La licencia de aviación más popular. Es la base para tu carrera profesional o para disfrutar de la libertad de volar aviones monomotor.</p>
+                    <p><strong>Lo que obtienes:</strong> Licencia EASA válida mundialmente. Vuelo por placer o inicio del camino profesional.</p>
+                </div>
+                <div class="cta-button">PPL | Ver Detalles del Curso</div>
+            </div>
+
+            <div class="course-card ulm">
+                <div class="icon-container">🛩️</div> 
+                <h2>PILOTO ULM</h2>
+                <div class="description">
+                    <p>Pilota ultraligeros, aeronaves ligeras, triciclos y autogiros. La forma más económica y pura de volar.</p>
+                    <p><strong>Lo que obtienes:</strong> Licencia de piloto ULM. Ideal para vuelo deportivo y recreativo.</p>
+                </div>
+                <div class="cta-button">ULM | Descubre la Forma más Ligera de Volar</div>
+            </div>
+
+        </div>
+    </div>
+
+    <div class="contact-footer">
+        **Secretaría:** 965 950 882 | **Email:** info@aeroclubalicante.com **
+    </div>
+
+</body>
+</html>
