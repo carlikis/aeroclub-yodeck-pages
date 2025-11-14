@@ -4,13 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Cursos Oficiales - Aeroclub LEMU</title>
-    <!-- FUENTES BEBAS NEUE (TITULARES) y ROBOTO (CUERPO) -->
-    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Roboto:wght@300;400;700;900&display=swap" rel="stylesheet">
+    <!-- FUENTES BEBAS NEUE (TITULARES) y ROBOTO (CUERPO) --><link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Roboto:wght@300;400;700;900&display=swap" rel="stylesheet">
     
-    <!-- LIBRERÍA DE ICONOS FONT AWESOME -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
-    
-    <style>
+    <!-- NO NECESITAMOS FONT AWESOME YA QUE USAREMOS SVG INLINE --><style>
         /* VARIABLES DE COLOR PROFESIONAL */
         :root {
             --bg-dark: #1e1e2d; 
@@ -94,9 +90,17 @@
         }
         
         .icon-container {
-            font-size: 5vw; 
-            margin-bottom: 0.5vw;
+            /* El SVG se redimensiona al 100% de este contenedor. */
+            width: 5vw;
+            height: 5vw;
+            margin: 0 auto 0.5vw auto;
             line-height: 1;
+        }
+        /* ESTILO PARA LOS SVGS INLINE: Asegura que hereden el color */
+        .icon-container svg {
+            width: 100%;
+            height: 100%;
+            fill: currentColor; /* El SVG tomará el color del padre (course-card) */
         }
 
         .course-card h2 {
@@ -170,8 +174,11 @@
         <div class="course-grid">
 
             <div class="course-card ppl">
-                <!-- Icono Avión de despegue para PPL -->
-                <div class="icon-container"><i class="fas fa-plane-departure"></i></div>
+                <!-- ICONO SVG para PPL: Avión de hélice (más acorde) --><div class="icon-container">
+                    <svg viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M256 16c-10.6 0-20 8.6-20 19.2V160L96 208v48l140 16v64l-72 48v48l92-16 92 16v-48l-72-48v-64l140-16v-48l-140-48V35.2c0-10.6-9.4-19.2-20-19.2z"/>
+                    </svg>
+                </div>
                 <h2>PILOTO PRIVADO (PPL)</h2>
                 <div class="description">
                     <p>La licencia de aviación más popular. Es la base para tu carrera profesional o para disfrutar de la libertad de volar aviones monomotor.</p>
@@ -181,8 +188,11 @@
             </div>
 
             <div class="course-card ulm">
-                 <!-- Nuevo Icono: Viento (fa-wind) para ULM, sugerencia de vuelo ultraligero y libre -->
-                <div class="icon-container"><i class="fas fa-wind"></i></div> 
+                 <!-- ICONO SVG para ULM: Ala de avión estilizada (más acorde) --><div class="icon-container">
+                    <svg viewBox="0 0 640 512" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M512 192H416L307 96H96c-17.7 0-32 14.3-32 32v32h128l64 48H96c-53 0-96 43-96 96v16h64l48 64h64l48-64h176l64 64h64l-32-64h96v-96c0-35.3-28.7-64-64-64z"/>
+                    </svg>
+                </div> 
                 <h2>PILOTO ULM</h2>
                 <div class="description">
                     <p>Pilota ultraligeros, aeronaves ligeras, triciclos y autogiros. La forma más económica y pura de volar.</p>
