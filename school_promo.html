@@ -4,7 +4,12 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Cursos Oficiales - Aeroclub LEMU</title>
+    <!-- FUENTES BEBAS NEUE (TITULARES) y ROBOTO (CUERPO) -->
     <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Roboto:wght@300;400;700;900&display=swap" rel="stylesheet">
+    
+    <!-- LIBRERÍA DE ICONOS FONT AWESOME -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+    
     <style>
         /* VARIABLES DE COLOR PROFESIONAL */
         :root {
@@ -15,6 +20,7 @@
             --card-text-dark: #333;
             --highlight-blue: #00bfff; /* Cian para PPL */
             --highlight-green: #28a745; /* Verde para ULM */
+            --text-light: #ffffff;
         }
 
         body {
@@ -26,12 +32,13 @@
             height: 100vh;
             display: flex;
             flex-direction: column;
-            overflow: hidden;
+            overflow: hidden; /* CRÍTICO: Asegura que NO haya scroll */
         }
         .container {
             width: 90%;
             margin: 0 auto;
-            padding: 2vw 0;
+            /* AJUSTE AGRESIVO: Reducido a 0.5vh */
+            padding: 0.5vh 0; 
             flex-grow: 1;
             display: flex;
             flex-direction: column;
@@ -42,29 +49,33 @@
         header {
             background-color: var(--header-bg);
             color: var(--header-color);
-            padding: 1.5vw 0;
+            /* AJUSTE AGRESIVO: Reducido a 1vh */
+            padding: 1vh 0; 
             text-align: center;
             box-shadow: 0 4px 10px rgba(0, 0, 0, 0.4);
         }
         header h1 {
             margin: 0;
             font-family: 'Bebas Neue', sans-serif;
-            font-size: 4.5vw; 
+            /* AJUSTE AGRESIVO: Reducido a 4vw */
+            font-size: 4vw; 
             letter-spacing: 0.2em;
         }
         header p {
             margin: 0;
-            font-size: 1.8vw;
+            font-size: 1.5vw; 
             font-weight: 300;
         }
 
-        /* GRID DE CURSOS: AHORA SOLO 2 COLUMNAS */
+        /* GRID DE CURSOS */
         .course-grid {
             flex-grow: 1;
             display: grid;
             grid-template-columns: 1fr 1fr;
-            gap: 4vw;
-            padding-top: 3vw;
+            /* Mantenemos el gap de 2vw */
+            gap: 2vw; 
+            padding-top: 2vw;
+            width: 100%;
         }
 
         /* TARJETA DE CURSO */
@@ -72,31 +83,37 @@
             background-color: var(--card-bg-light);
             border-radius: 12px;
             box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4);
-            padding: 2.5vw;
+            /* AJUSTE AGRESIVO: Reducido a 1.5vw */
+            padding: 1.5vw; 
             text-align: center;
             display: flex;
             flex-direction: column;
             justify-content: space-between;
+            overflow: hidden; 
+            min-height: 0; /* Asegura que el contenido se comprima si es necesario */
         }
         
         .icon-container {
-            font-size: 6vw;
+            font-size: 5vw; 
             margin-bottom: 0.5vw;
             line-height: 1;
         }
 
         .course-card h2 {
             font-family: 'Bebas Neue', sans-serif;
-            font-size: 4vw;
-            margin: 0.5vw 0 1.5vw 0;
-            padding-bottom: 0.8vw;
+            /* AJUSTE AGRESIVO: Reducido a 3.2vw */
+            font-size: 3.2vw; 
+            /* Reducido el margen vertical */
+            margin: 0.3vw 0 1vw 0; 
+            padding-bottom: 0.6vw; /* Reducido */
             border-bottom: 5px solid;
         }
         
         .course-card .description {
-            font-size: 1.5vw;
-            line-height: 1.4;
-            margin-bottom: 1.5vw;
+            /* AJUSTE AGRESIVO: Reducido a 1.2vw */
+            font-size: 1.2vw; 
+            line-height: 1.25; /* Reducido */
+            margin-bottom: 0.8vw; /* Reducido */
             flex-grow: 1;
         }
         .course-card strong {
@@ -107,11 +124,13 @@
             display: block;
             background-color: #3b5998;
             color: white;
-            padding: 1.2vw 0;
+            /* AJUSTE AGRESIVO: Reducido a 1vw */
+            padding: 1vw 0; 
             border-radius: 5px;
-            font-size: 2vw;
-            font-weight: 900;
-            margin-top: 2vw;
+            /* Reducido a 1.7vw */
+            font-size: 1.7vw; 
+            /* Reducido a 1vw */
+            margin-top: 1vw; 
         }
         
         /* ESTILOS ESPECÍFICOS DE COLOR */
@@ -126,12 +145,14 @@
 
         /* CONTACTO/INFORMACIÓN FINAL */
         .contact-footer {
-            font-size: 1.8vw;
+            font-size: 1.6vw; /* Reducido */
             color: var(--text-light);
             text-align: center;
-            padding: 1vw 0;
+            /* AJUSTE AGRESIVO: Reducido a 0.8vh */
+            padding: 0.8vh 0; 
             border-top: 2px solid var(--text-light);
             width: 100%;
+            background-color: var(--bg-dark);
         }
         .contact-footer strong {
             color: var(--highlight-blue);
@@ -139,7 +160,7 @@
     </style>
 </head>
 <body>
-
+    
     <header>
         <h1>CONVIÉRTETE EN PILOTO </h1>
         <p>Escuela de vuelo del Real Aeroclub de Alicante.</p>
@@ -149,21 +170,23 @@
         <div class="course-grid">
 
             <div class="course-card ppl">
-                <div class="icon-container">✈️</div>
+                <!-- Nuevo Icono: Avión de despegue (para PPL) -->
+                <div class="icon-container"><i class="fas fa-plane-departure"></i></div>
                 <h2>PILOTO PRIVADO (PPL)</h2>
                 <div class="description">
                     <p>La licencia de aviación más popular. Es la base para tu carrera profesional o para disfrutar de la libertad de volar aviones monomotor.</p>
-                    <p><strong>Lo que obtienes:</strong> Licencia EASA válida mundialmente. Vuelo por placer o inicio del camino profesional.</p>
+                    <p><strong>Obtienes:</strong> Licencia EASA válida mundialmente. Vuelo por placer o inicio del camino profesional.</p>
                 </div>
                 <div class="cta-button">PPL | Infórmate</div>
             </div>
 
             <div class="course-card ulm">
-                <div class="icon-container">🛩️</div> 
+                 <!-- Nuevo Icono: Pluma (para ULM, sugiere ligereza) -->
+                <div class="icon-container"><i class="fas fa-feather-alt"></i></div> 
                 <h2>PILOTO ULM</h2>
                 <div class="description">
                     <p>Pilota ultraligeros, aeronaves ligeras, triciclos y autogiros. La forma más económica y pura de volar.</p>
-                    <p><strong>Lo que obtienes:</strong> Licencia de piloto ULM. Ideal para vuelo deportivo y recreativo.</p>
+                    <p><strong>Obtienes:</strong> Licencia de piloto ULM. Ideal para vuelo deportivo y recreativo.</p>
                 </div>
                 <div class="cta-button">ULM | Descubre la Forma más Ligera de Volar</div>
             </div>
@@ -176,5 +199,4 @@
     </div>
 
 </body>
-
 </html>
