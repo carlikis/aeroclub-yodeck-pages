@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Oferta de Vuelos y Precios - Aeroclub (4:3)</title>
+    <!-- FUENTES ROBOTO -->
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700;900&display=swap" rel="stylesheet">
+    <!-- LIBRERÍA DE ICONOS FONT AWESOME -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+    
+    <style>
+        /* VARIABLES DE COLOR PROFESIONAL */
+        :root {
+            --bg-dark: #1e1e2d;
+            --header-color: #3b5998;
+            --title-color: #ffffff;
+            --group-color: #00bfff; /* Azul Cyan */
+            --price-highlight: #ffc107; /* Amarillo/Ámbar */
+            --option-bg: #2b2b40;
+            --alert-bg: #f5554b; /* Rojo */
+            --alert-text: #fff;
+            --text-light: #f8f8f8;
+            --text-muted: #aaaaaa;
+        }
+
+        /* ESTILOS GLOBALES Y OPTIMIZACIÓN DE ALTURA */
+        body {
+            font-family: 'Roboto', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: var(--bg-dark);
+            color: var(--text-light);
+            /* Línea base más ajustada */
+            line-height: 1.15; 
+            overflow: hidden;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            /* Se usa la unidad vw para el tamaño base ya que el 4:3 es más ancho que alto. */
+            font-size: 0.9vw; 
+        }
+        .container {
+            width: 96%;
+            margin: 0 auto;
+        }
+        
+        /* CABECERA (Header) */
+        header {
+            background-color: var(--header-color);
+            color: var(--title-color);
+            padding: 0.7vw 0; /* Más reducido */
+            text-align: center;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+            flex-shrink: 0;
+        }
+        header h1 {
+            margin: 0;
+            font-size: 2.0vw; 
+            font-weight: 900;
+        }
+        header p {
+            margin: 0;
+            font-size: 1.0vw; 
+            padding-top: 0.1vw; /* Más reducido */
+        }
+
+        /* SECCIÓN DE CONTENIDO (MÁXIMO ESPACIO VERTICAL) */
+        .content-section {
+            padding: 1vw 0; 
+            flex-grow: 1;
+            display: flex;
+            min-height: 0;
+        }
+        
+        /* CUADRÍCULA ÚNICA DE VUELOS (4 COLUMNAS) */
+        .flight-options {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            /* Dos filas iguales para dividir el espacio vertical perfectamente */
+            grid-template-rows: 1fr 1fr; 
+            gap: 0.8vw; /* Un poco menos de espacio entre tarjetas */
+            width: 100%;
+            flex-grow: 1;
+        }
+
+        /* OPCIONES DE VUELO (TARJETAS) */
+        .option-box {
+            background-color: var(--option-bg);
+            padding: 0.7vw; /* MUY ajustado */
+            border-radius: 6px;
+            box-shadow: 0 3px 8px rgba(0, 0, 0, 0.2);
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            min-height: 100%;
+            overflow: hidden; 
+        }
+
+        .option-box h4 {
+            color: var(--group-color);
+            font-size: 1.3vw; 
+            font-weight: 900;
+            margin: 0 0 0.3vw 0; /* MUY ajustado */
+            padding-bottom: 0.3vw;
+            border-bottom: 2px solid #3b3b55;
+            flex-shrink: 0;
+            line-height: 1;
+        }
+        .option-box h4 i {
+            margin-right: 0.3vw;
+            font-size: 1.1em;
+            color: var(--group-color);
+        }
+        
+        /* DETALLES DE RUTA */
+        .route-info {
+            font-size: 0.9vw; 
+            margin-bottom: 0.3vw; /* MUY ajustado */
+            color: var(--text-muted);
+            flex-grow: 1;
+            line-height: 1.2; /* Apretamos el texto de la ruta */
+            overflow: hidden;
+        }
+        .route-info strong {
+            color: var(--text-light);
+        }
+
+        /* LISTA DE PRECIOS */
+        .price-list {
+            list-style: none;
+            padding: 0;
+            margin-top: 0.3vw; /* MUY ajustado */
+            flex-shrink: 0;
+        }
+        .price-list li {
+            padding: 0.2vw 0; /* MUY ajustado */
+            font-size: 1.0vw; 
+            border-bottom: 1px dashed #3b3b55;
+        }
+        .price-list li:last-child {
+            border-bottom: none;
+        }
+        /* DESTACAMOS EL PRECIO */
+        .price-list li strong {
+            font-size: 1.2vw; 
+            color: var(--price-highlight);
+            font-weight: 900;
+        }
+        
+        /* TARJETA DE AVISO (ALERTA) */
+        .option-box.alert {
+            background-color: var(--alert-bg);
+            border: 2px solid var(--alert-text);
+            color: var(--alert-text);
+            font-size: 1.0vw; 
+            /* Se asegura que ocupe la posición 4 de la columna 1 */
+            grid-column: 4 / 5; 
+            grid-row: 1 / 2; 
+            padding: 1.0vw; /* Ajuste del padding */
+            line-height: 1.3;
+        }
+        .option-box.alert h4 {
+            color: var(--alert-text);
+            border-bottom: 2px solid var(--alert-text);
+            margin-bottom: 0.6vw; /* Ajustado */
+        }
+        .option-box.alert h4 i {
+            color: var(--alert-text); 
+        }
+        .option-box.alert .price-list {
+            margin-top: 0;
+            flex-grow: 1;
+        }
+        .option-box.alert p {
+             margin: 0 0 0.6vw 0; /* Ajustado */
+             font-size: 0.95vw;
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="container">
+            <h1>OFERTA DE VUELOS DE INICIACIÓN Y DIVULGACIÓN</h1>
+            <p>Descubre Alicante desde el aire con nuestros pilotos profesionales.</p>
+        </div>
+    </header>
+
+    <div class="container">
+        <section class="content-section">
+            
+            <div class="flight-options">
+                
+                <!-- Columna 1, Fila 1 -->
+                <div class="option-box">
+                    <h4><i class="fas fa-plane"></i> 20 MINUTOS</h4>
+                    <div class="route-info"><strong>Ruta:</strong> Mutxamel, Campello, Cabo de las Huertas, Albufera, San Vicente.</div>
+                    <ul class="price-list">
+                        <li>1 Pasajero: <strong>90€</strong></li>
+                        <li>2 Pasajeros: <strong>145€</strong></li>
+                        <li>3 Pasajeros: <strong>175€</strong></li>
+                    </ul>
+                </div>
+
+                <!-- Columna 2, Fila 1 -->
+                <div class="option-box">
+                    <h4><i class="fas fa-water"></i> 25 MINUTOS COSTA</h4>
+                    <div class="route-info"><strong>Ruta:</strong> Mutxamel, Campello, Villajoyosa, Cala de Finestrat.</div>
+                    <ul class="price-list">
+                        <li>1 Pasajero: <strong>100€</strong></li>
+                        <li>2 Pasajeros: <strong>155€</strong></li>
+                        <li>3 Pasajeros: <strong>185€</strong></li>
+                    </ul>
+                </div>
+
+                <!-- Columna 3, Fila 1 -->
+                <div class="option-box">
+                    <h4><i class="fas fa-mountain"></i> 25 MINUTOS INTERIOR</h4>
+                    <div class="route-info"><strong>Ruta:</strong> Mutxamel, Castalla, Onil, Ibi, Tibi.</div>
+                    <ul class="price-list">
+                        <li>1 Pasajero: <strong>100€</strong></li>
+                        <li>2 Pasajeros: <strong>155€</strong></li>
+                        <li>3 Pasajeros: <strong>185€</strong></li>
+                    </ul>
+                </div>
+                
+                <!-- Columna 4, Fila 1 (AVISO - Ocupa la posición superior derecha) -->
+                <div class="option-box alert" style="grid-column: 4 / 5; grid-row: 1 / 2;">
+                    <h4><i class="fas fa-exclamation-triangle"></i> ¡AVISO IMPORTANTE!</h4>
+                    <p>Debido a trabajos que deben realizarse en el taller, el avión de 4 plazas no estará disponible temporalmente para la realización de vuelos de iniciación. </p>
+                    <p>Por lo tanto, **solamente pueden realizarse vuelos para un pasajero** hasta nuevo aviso.</p>
+                </div>
+
+
+                <!-- Columna 1, Fila 2 -->
+                <div class="option-box">
+                    <h4><i class="fas fa-city"></i> 30 MINUTOS</h4>
+                    <div class="route-info"><strong>Ruta:</strong> Mutxamel, El Campello, Villajoyosa, Benidorm.</div>
+                    <ul class="price-list">
+                        <li>1 Pasajero: <strong>115€</strong></li>
+                        <li>2 Pasajeros: <strong>185€</strong></li>
+                        <li>3 Pasajeros: <strong>235€</strong></li>
+                    </ul>
+                </div>
+
+                <!-- Columna 2, Fila 2 -->
+                <div class="option-box">
+                    <h4><i class="fas fa-compass"></i> 45 MIN. MAR Y MONTAÑA</h4>
+                    <div class="route-info">Vuelo panorámico combinado. Ideal para disfrutar de diversos paisajes y la costa.</div>
+                    <ul class="price-list">
+                        <li>1 Pasajero: <strong>175€</strong></li>
+                        <li>2 o 3 Pasajeros: <strong>265€</strong></li>
+                    </ul>
+                </div>
+
+                <!-- Columna 3, Fila 2 -->
+                <div class="option-box">
+                    <h4><i class="fas fa-user-tie"></i> 45 MIN. PILOTO POR UN DÍA</h4>
+                    <div class="route-info">Experiencia inmersiva donde podrás tomar los mandos de la aeronave. ¡Una aventura única!</div>
+                    <ul class="price-list">
+                        <li>1 Pasajero: <strong>175€</strong></li>
+                        <li>2 o 3 Pasajeros: <strong>265€</strong></li>
+                    </ul>
+                </div>
+                
+                <!-- Columna 4, Fila 2 (60 MINUTOS - Ocupa la posición inferior derecha) -->
+                <div class="option-box" style="grid-column: 4 / 5; grid-row: 2 / 3; border: 2px solid var(--group-color);">
+                     <h4><i class="fas fa-castle"></i> 60 MIN. CASTILLOS</h4>
+                    <div class="route-info">Ruta de una hora sobre monumentos históricos, valles y reservas naturales del interior. La más completa.</div>
+                    <ul class="price-list">
+                        <li>1 Pasajero: <strong>215€</strong></li>
+                        <li>2 o 3 Pasajeros: <strong>345€</strong></li>
+                    </ul>
+                </div>
+
+            </div>
+
+        </section>
+    </div>
+
+</body>
+</html>

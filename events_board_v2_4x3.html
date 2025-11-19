@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tablero de Anuncios - Aeroclub LEMU (4:3)</title>
+    <!-- FUENTES ROBOTO -->
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;700;900&display=swap" rel="stylesheet">
+    
+    <!-- LIBRERÍA DE ICONOS FONT AWESOME -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+    
+    <style>
+        /* VARIABLES DE COLOR PARA ANUNCIOS */
+        :root {
+            --bg-dark: #1e1e2d;
+            --header-color: #f8f8f8; 
+            --header-bg: #3b5998; 
+            --card-bg: #2b2b40;
+            --event-color: #00e0ff; 
+            --alert-color: #ffc107; 
+            --urgent-color: #f5554b; 
+            --text-light: #f8f8f8;
+            --text-muted: #aaaaaa;
+        }
+
+        body {
+            font-family: 'Roboto', sans-serif;
+            background-color: var(--bg-dark);
+            color: var(--text-light);
+            margin: 0;
+            padding: 0;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden; 
+            font-size: 1.0vw;
+        }
+        .container {
+            width: 95%;
+            margin: 0 auto;
+            /* Máxima compresión vertical */
+            padding: 0.2vh 0; 
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* CABECERA */
+        header {
+            background-color: var(--header-bg);
+            color: var(--header-color);
+            padding: 0.8vh 0; /* Más reducido */
+            text-align: center;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.4);
+        }
+        header h1 {
+            margin: 0;
+            /* Ajuste de tamaño para 4:3 */
+            font-size: 2.1vw; 
+            font-weight: 900;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+        }
+
+        /* TABLERO DE ANUNCIOS */
+        .announcement-grid {
+            flex-grow: 1; 
+            display: grid;
+            grid-template-columns: repeat(3, 1fr); 
+            grid-template-rows: 55fr 45fr; 
+            gap: 1.2vw; /* Reducido el gap */
+            padding: 1.5vw 0; 
+        }
+
+        /* TARJETA BASE */
+        .announcement-card {
+            background-color: var(--card-bg);
+            padding: 0.8vw; /* Más reducido */
+            border-radius: 8px; /* Ligeramente más pequeños */
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            min-height: 100%;
+        }
+        .announcement-card h2 {
+            font-size: 1.6vw; /* Reducido */
+            font-weight: 900;
+            margin-top: 0;
+            padding-bottom: 0.2vw; /* Más compreso */
+            border-bottom: 3px solid;
+            letter-spacing: 0.05em;
+        }
+        .announcement-card h2 i {
+            margin-right: 0.4vw;
+            font-size: 1.0em;
+        }
+
+        .announcement-card p {
+            font-size: 1.0vw; /* Ligeramente más pequeño */
+            line-height: 1.25; 
+            margin-bottom: 0.3vw; 
+            flex-grow: 1;
+            overflow: hidden; 
+        }
+        .announcement-card strong {
+            font-weight: 700;
+            color: var(--text-light);
+        }
+
+        /* ESTILOS POR CATEGORÍA */
+        .event h2 {
+            color: var(--event-color);
+            border-bottom-color: var(--event-color);
+        }
+        .notice h2 {
+            color: var(--alert-color);
+            border-bottom-color: var(--alert-color);
+        }
+        .urgent {
+            background-color: var(--urgent-color);
+            color: white;
+            box-shadow: 0 4px 15px rgba(245, 85, 75, 0.6);
+            grid-column: 1 / span 2; 
+            grid-row: 1 / 2; 
+        }
+        .urgent-2 {
+            grid-column: 1 / 2;
+            grid-row: 2 / 3;
+            background-color: #2b2b40;
+        }
+        .urgent h2 {
+            color: white;
+            border-bottom-color: white;
+            font-size: 1.8vw; 
+        }
+        .urgent p {
+            font-size: 1.15vw; 
+        }
+
+        /* TARJETA LATERAL DE CONTACTO/MEMBRESÍA */
+        .sidebar-card {
+            grid-column: 3 / 4;
+            grid-row: 1 / span 2; 
+            background-color: #1a252e;
+            padding: 1.2vw; /* Reducido */
+            border-left: 4px solid var(--event-color);
+            text-align: center;
+        }
+        .sidebar-card h3 {
+            font-size: 1.5vw; /* Reducido */
+            color: var(--event-color);
+            margin-top: 0;
+            margin-bottom: 0.6vw; 
+        }
+        .sidebar-card .contact-info {
+            font-size: 1.0vw; 
+            padding-top: 0.5vw; 
+            border-top: 1px dashed var(--text-muted);
+        }
+        .contact-info p {
+            margin: 0.3vw 0; 
+        }
+        .contact-info p i {
+            margin-right: 0.4vw;
+            color: var(--event-color);
+        }
+        .sidebar-card .muted-info {
+            font-size: 0.9vw; /* Más pequeño */
+            margin-top: 1.5vw; 
+            color: var(--text-muted);
+            border-top: 1px dashed var(--text-muted);
+            padding-top: 0.7vw;
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>REAL AEROCLUB DE ALICANTE TABLERO DE ANUNCIOS</h1>
+    </header>
+
+    <div class="container">
+        <div class="announcement-grid">
+
+            <!-- 1. ANUNCIO URGENTE (COLUMNAS 1 Y 2, FILA 1) -->
+            <div class="announcement-card urgent">
+                <div>
+                    <h2><i class="fas fa-exclamation-triangle"></i> ¡HOJAS DE REPOSTAJE!</h2>
+                    <p>Se recuerda a nuestros socios/as la obligatoriedad de <strong>FIRMAR</strong> los partes de combustible tras cada repostaje. Esta es una medida de seguridad crítica.</p>
+                    <p hidden>Rogamos disculpen las molestias.</p>
+                </div>
+                <p hidden style="text-align: right; font-size: 1.0vw; opacity: 0.8;">** Servicio de vending disponible 24/7 **</p>
+            </div>
+
+            <!-- 2. EVENTO PATRONA (COLUMNA 1, FILA 2) -->
+            <div class="announcement-card event urgent-2">
+                <div>
+                    <h2><i class="fas fa-plane"></i> FIESTA DE LA PATRONA 2025</h2>
+                    <p>El próximo 13 de diciembre celebraremos la <strong>"Fiesta de la Patrona 2025"</strong> a partir de las 09:30h.</p>
+                    <p>Entre otros eventos podrás disfrutar de vuelos de divulgación aeronáutica, exposición estática de nuestro avión Bücker, y una degustación de paella gratuita.</p>
+                </div>
+                <p style="font-weight: 700; color: var(--event-color); font-size: 1.2vw;">¡Bienvenidos todos los visitantes!</p>
+            </div>
+            
+            <!-- 3. CURSOS PPL/ULM (COLUMNA 2, FILA 2) -->
+            <div class="announcement-card notice">
+                <div>
+                    <h2><i class="fas fa-book-open"></i> CURSOS PPL(A) y ULM</h2>
+                    <p>Despega tu sueño de volar en nuestra escuela <strong>PPL y ULM</strong>.</p>
+                    <p>Obtén tu licencia de Piloto Privado (PPL) o Piloto de Ultraligero (ULM) y empieza a pilotar. ¡Inscríbete hoy y surca los cielos. Contacte con Secretaría para más detalles.</p>
+                </div>
+                <p style="font-weight: 700; color: var(--alert-color); font-size: 1.2vw;">** Últimas Plazas **</p>
+            </div>
+            
+            <!-- 4. MENSAJE DE MEMBRESÍA / CONTACTO (OCUPA COLUMNA 3, FILA 1 y 2) -->
+            <div class="announcement-card sidebar-card">
+                <h3>CONTACTO Y SOCIOS</h3>
+                <p>¿Interesado en hacerte socio, aprender a volar o realizar tu bautismo de vuelo? </p>
+                <div class="contact-info">
+                    <p><i class="fas fa-phone"></i> **Secretaría:** 965 95 0882</p>
+                    <p><i class="fas fa-envelope"></i> **Email:** info@aeroclubalicante.com</p>
+                    <p style="margin-top: 1.2vw;">Sigue nuestras redes sociales para estar al día de los eventos.</p>
+                </div>
+                <div class="muted-info">
+                    <p>Consulta el tablón físico para información detallada sobre eventos sociales y horarios del club.</p>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+</body>
+</html>
