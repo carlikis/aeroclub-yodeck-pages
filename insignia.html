@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Espacio Aéreo y Zonas Activas - LEMU</title>
+  <title>Carta VFR y Espacio Aéreo - LEMU</title>
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
   <style>
     html, body {
@@ -36,7 +36,6 @@
       margin: 0 0 6px 0;
       font-size: 16px;
       color: #38bdf8;
-      letter-spacing: 0.5px;
     }
     .info-panel p {
       margin: 4px 0;
@@ -71,27 +70,27 @@
 
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
   <script>
-    // Coordenadas exactas de LEMU (Mutxamel)
     const LEMU_COORDS = [38.439, -0.474];
 
-    // Inicializar mapa centrado en LEMU con zoom regional (10)
     const map = L.map('map', {
       zoomControl: false,
       attributionControl: false
     }).setView(LEMU_COORDS, 10);
 
-    // 1. Capa base clara y de alto contraste para TV (CartoDB Positron)
+    // 1. Mapa topográfico base limpio
     L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png', {
       maxZoom: 16
     }).addTo(map);
 
-    // 2. Capa oficial de Espacios Aéreos, CTR, TMA, LED y Zonas Restringidas (OpenAIP)
-    L.tileLayer('https://api.tiles.openaip.net/api/data/openaip/{z}/{x}/{y}.png?apiKey=6c92c17911583f2e7f48303344332a1b', {
-      maxZoom: 14,
+    // 2. Capa aeronáutica VFR OpenFlightMaps (Sin API Key)
+    L.tileLayer('https://snapshots.openflightmaps.org/live/latest/tiles/world/noninteractive/epsg3857/merged/512/latest/{z}/{x}/{y}.png', {
+      maxZoom: 12,
+      tileSize: 512,
+      zoomOffset: -1,
       opacity: 0.85
     }).addTo(map);
 
-    // 3. Marcador central en LEMU y anillos de distancia (5 NM y 10 NM)
+    // Marcador central en LEMU y anillos de distancia (5 NM y 10 NM)
     L.circleMarker(LEMU_COORDS, {
       radius: 7,
       fillColor: "#10b981",
@@ -101,7 +100,6 @@
       fillOpacity: 1
     }).addTo(map);
 
-    // 5 Millas Náuticas = 9260 metros
     L.circle(LEMU_COORDS, {
       radius: 9260,
       color: '#0284c7',
@@ -110,7 +108,6 @@
       fill: false
     }).addTo(map);
 
-    // 10 Millas Náuticas = 18520 metros
     L.circle(LEMU_COORDS, {
       radius: 18520,
       color: '#0284c7',
@@ -119,7 +116,6 @@
       fill: false
     }).addTo(map);
 
-    // Reloj UTC (Zulú) en tiempo real para cruzar con horarios de NOTAMs
     function actualizarReloj() {
       const ahora = new Date();
       const utc = ahora.toISOString().substring(11, 19) + ' UTC (Z)';
