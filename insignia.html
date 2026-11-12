@@ -3,8 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Carta Oficial ENAIRE VFR - LEMU</title>
-  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+  <title>Mapa Oficial ENAIRE - LEMU</title>
   <style>
     html, body {
       margin: 0;
@@ -12,107 +11,47 @@
       width: 100%;
       height: 100%;
       background-color: #0b111a;
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
       overflow: hidden;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
     }
-    #map {
+    iframe {
+      position: absolute;
+      top: 0;
+      left: 0;
       width: 100%;
       height: 100%;
+      border: none;
     }
-    .info-panel {
+    .reloj-flotante {
       position: absolute;
-      top: 15px;
-      right: 15px;
+      bottom: 12px;
+      left: 12px;
       z-index: 1000;
-      background: rgba(15, 23, 42, 0.92);
-      color: #f8fafc;
-      padding: 14px 18px;
-      border-radius: 8px;
+      background: rgba(15, 23, 42, 0.9);
+      color: #fbbf24;
+      padding: 8px 14px;
+      border-radius: 6px;
       border: 1px solid #334155;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.5);
-      max-width: 320px;
-    }
-    .info-panel h2 {
-      margin: 0 0 6px 0;
-      font-size: 15px;
-      color: #38bdf8;
-      letter-spacing: 0.5px;
-    }
-    .info-panel p {
-      margin: 4px 0;
-      font-size: 12px;
-      color: #cbd5e1;
-      line-height: 1.4;
-    }
-    .badge-oficial {
-      display: inline-block;
-      padding: 2px 6px;
-      border-radius: 4px;
-      font-size: 11px;
+      font-size: 14px;
       font-weight: bold;
-      background: #10b981;
-      color: #000;
-      margin-right: 5px;
+      pointer-events: none;
     }
   </style>
 </head>
 <body>
 
-  <div class="info-panel">
-    <h2><span class="badge-oficial">AIP ENAIRE</span> ENTORNO LEMU</h2>
-    <p>Datos oficiales AIP España / INSIGNIA VFR</p>
-    <p>Anillos de referencia: 5 NM y 10 NM desde LEMU</p>
-    <p id="reloj-utc" style="margin-top:8px; font-size: 14px; font-weight:bold; color:#fbbf24;"></p>
-  </div>
+  <div class="reloj-flotante" id="reloj-utc">Cargando UTC...</div>
 
-  <div id="map"></div>
+  <iframe 
+    src="https://drones.enaire.es/?lat=38.4392&lon=-0.4742&zoom=11" 
+    allow="geolocation">
+  </iframe>
 
-  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
   <script>
-    // Coordenadas exactas de LEMU (Mutxamel)
-    const LEMU_COORDS = [38.4392, -0.4742];
-
-    const map = L.map('map', {
-      zoomControl: false,
-      attributionControl: false
-    }).setView([38.39, -0.50], 10);
-
-    // 1. Mapa base oficial del Instituto Geográfico Nacional (IGN España)
-    L.tileLayer('https://www.ign.es/wmts/mapa-raster?request=GetTile&service=WMTS&version=1.0.0&Layer=MTN&Style=default&Format=image/jpeg&TileMatrixSet=GoogleMapsCompatible&TileMatrix={z}&TileRow={y}&TileCol={x}', {
-      maxZoom: 16
-    }).addTo(map);
-
-    // 2. Capa oficial WMS de Espacio Aéreo y Carta VFR de ENAIRE (AIP España)
-    L.tileLayer.wms('https://servais.enaire.es/insignia/services/INSIGNIA_VFR/MapServer/WMSServer', {
-      layers: '0,1,2,3,4,5,6,7,8,9,10,11,12',
-      format: 'image/png',
-      transparent: true,
-      version: '1.3.0',
-      opacity: 0.90
-    }).addTo(map);
-
-    // 3. Anillos de referencia de distancia (5 NM y 10 NM desde LEMU)
-    L.circle(LEMU_COORDS, {
-      radius: 9260,
-      color: '#0f172a',
-      weight: 1.5,
-      dashArray: '5, 5',
-      fill: false
-    }).addTo(map);
-
-    L.circle(LEMU_COORDS, {
-      radius: 18520,
-      color: '#0f172a',
-      weight: 1.5,
-      dashArray: '5, 5',
-      fill: false
-    }).addTo(map);
-
-    // Reloj UTC (Zulú)
     function actualizarReloj() {
       const ahora = new Date();
       const utc = ahora.toISOString().substring(11, 19) + ' UTC (Z)';
-      document.getElementById('reloj-utc').textContent = 'Hora actual: ' + utc;
+      document.getElementById('reloj-utc').textContent = 'LEMU | ' + utc;
     }
     setInterval(actualizarReloj, 1000);
     actualizarReloj();
