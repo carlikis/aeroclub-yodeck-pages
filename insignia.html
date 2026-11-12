@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Carta VFR y Espacio Aéreo - LEMU</title>
+  <title>Carta Oficial ENAIRE VFR - LEMU</title>
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
   <style>
     html, body {
@@ -34,37 +34,35 @@
     }
     .info-panel h2 {
       margin: 0 0 6px 0;
-      font-size: 16px;
+      font-size: 15px;
       color: #38bdf8;
       letter-spacing: 0.5px;
     }
     .info-panel p {
       margin: 4px 0;
-      font-size: 13px;
+      font-size: 12px;
       color: #cbd5e1;
       line-height: 1.4;
     }
-    .badge {
+    .badge-oficial {
       display: inline-block;
       padding: 2px 6px;
       border-radius: 4px;
       font-size: 11px;
       font-weight: bold;
-      margin-right: 4px;
+      background: #10b981;
+      color: #000;
+      margin-right: 5px;
     }
-    .badge-ctr { background: #ef4444; color: white; }
-    .badge-tra { background: #f59e0b; color: black; }
-    .badge-lemu { background: #10b981; color: black; }
   </style>
 </head>
 <body>
 
   <div class="info-panel">
-    <h2>ESPACIO AÉREO LEMU (MUTXAMEL)</h2>
-    <p><span class="badge badge-lemu">LEMU</span> Elev: 475 ft | Rwy 12/30 | 123.500</p>
-    <p><span class="badge badge-ctr">CTR LEAL</span> Techo 1500 ft AGL / TMA</p>
-    <p><span class="badge badge-tra">ZONAS</span> Anillos de referencia: 5 NM y 10 NM</p>
-    <p id="reloj-utc" style="margin-top:8px; font-weight:bold; color:#fbbf24;"></p>
+    <h2><span class="badge-oficial">AIP ENAIRE</span> ENTORNO LEMU</h2>
+    <p>Datos oficiales AIP España / INSIGNIA VFR</p>
+    <p>Anillos de referencia: 5 NM y 10 NM desde LEMU</p>
+    <p id="reloj-utc" style="margin-top:8px; font-size: 14px; font-weight:bold; color:#fbbf24;"></p>
   </div>
 
   <div id="map"></div>
@@ -72,52 +70,41 @@
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
   <script>
     // Coordenadas exactas de LEMU (Mutxamel)
-    const LEMU_COORDS = [38.439, -0.474];
+    const LEMU_COORDS = [38.4392, -0.4742];
 
-    // Inicializar mapa centrado en LEMU
     const map = L.map('map', {
       zoomControl: false,
       attributionControl: false
-    }).setView(LEMU_COORDS, 10);
+    }).setView([38.39, -0.50], 10);
 
-    // 1. Mapa base limpio
-    L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png', {
+    // 1. Mapa base oficial del Instituto Geográfico Nacional (IGN España)
+    L.tileLayer('https://www.ign.es/wmts/mapa-raster?request=GetTile&service=WMTS&version=1.0.0&Layer=MTN&Style=default&Format=image/jpeg&TileMatrixSet=GoogleMapsCompatible&TileMatrix={z}&TileRow={y}&TileCol={x}', {
       maxZoom: 16
     }).addTo(map);
 
-    // 2. Capa aeronáutica VFR OpenFlightMaps (Sin API Key)
-    L.tileLayer('https://snapshots.openflightmaps.org/live/latest/tiles/world/noninteractive/epsg3857/merged/512/latest/{z}/{x}/{y}.png', {
-      maxZoom: 12,
-      tileSize: 512,
-      zoomOffset: -1,
-      opacity: 0.85
+    // 2. Capa oficial WMS de Espacio Aéreo y Carta VFR de ENAIRE (AIP España)
+    L.tileLayer.wms('https://servais.enaire.es/insignia/services/INSIGNIA_VFR/MapServer/WMSServer', {
+      layers: '0,1,2,3,4,5,6,7,8,9,10,11,12',
+      format: 'image/png',
+      transparent: true,
+      version: '1.3.0',
+      opacity: 0.90
     }).addTo(map);
 
-    // 3. Marcador central en LEMU
-    L.circleMarker(LEMU_COORDS, {
-      radius: 7,
-      fillColor: "#10b981",
-      color: "#000",
-      weight: 2,
-      opacity: 1,
-      fillOpacity: 1
-    }).addTo(map);
-
-    // Anillo de 5 Millas Náuticas (9260 metros)
+    // 3. Anillos de referencia de distancia (5 NM y 10 NM desde LEMU)
     L.circle(LEMU_COORDS, {
       radius: 9260,
-      color: '#0284c7',
+      color: '#0f172a',
       weight: 1.5,
-      dashArray: '6, 6',
+      dashArray: '5, 5',
       fill: false
     }).addTo(map);
 
-    // Anillo de 10 Millas Náuticas (18520 metros)
     L.circle(LEMU_COORDS, {
       radius: 18520,
-      color: '#0284c7',
+      color: '#0f172a',
       weight: 1.5,
-      dashArray: '6, 6',
+      dashArray: '5, 5',
       fill: false
     }).addTo(map);
 
