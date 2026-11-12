@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Espacio Aéreo LEMU (Mutxamel)</title>
+  <title>Carta VFR y Espacio Aéreo - LEMU</title>
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
   <style>
     html, body {
@@ -26,20 +26,20 @@
       z-index: 1000;
       background: rgba(15, 23, 42, 0.92);
       color: #f8fafc;
-      padding: 16px 20px;
+      padding: 14px 18px;
       border-radius: 8px;
       border: 1px solid #334155;
       box-shadow: 0 4px 12px rgba(0,0,0,0.5);
-      max-width: 340px;
+      max-width: 320px;
     }
     .info-panel h2 {
-      margin: 0 0 8px 0;
+      margin: 0 0 6px 0;
       font-size: 16px;
       color: #38bdf8;
       letter-spacing: 0.5px;
     }
     .info-panel p {
-      margin: 5px 0;
+      margin: 4px 0;
       font-size: 13px;
       color: #cbd5e1;
       line-height: 1.4;
@@ -50,132 +50,78 @@
       border-radius: 4px;
       font-size: 11px;
       font-weight: bold;
-      margin-right: 5px;
+      margin-right: 4px;
     }
     .badge-ctr { background: #ef4444; color: white; }
-    .badge-atz { background: #3b82f6; color: white; }
+    .badge-tra { background: #f59e0b; color: black; }
     .badge-lemu { background: #10b981; color: black; }
-    .vfr-label {
-      background: rgba(15, 23, 42, 0.85);
-      border: 1px solid #38bdf8;
-      color: #38bdf8;
-      font-weight: bold;
-      font-size: 11px;
-      padding: 1px 4px;
-      border-radius: 3px;
-      white-space: nowrap;
-    }
   </style>
 </head>
 <body>
 
   <div class="info-panel">
     <h2>ESPACIO AÉREO LEMU (MUTXAMEL)</h2>
-    <p><span class="badge badge-lemu">LEMU</span> Elev: 499 ft | RWY 12/30 | 123.500 MHz</p>
-    <p><span class="badge badge-atz">ATZ LEMU</span> Radio 3 NM / Techo 1500 ft AGL</p>
-    <p><span class="badge badge-ctr">CTR LEAL</span> Clase D (SFC - 1500 ft AGL / TMA)</p>
-    <p style="font-size: 12px; color: #94a3b8; margin-top: 6px;">Anillos punteados: 5 NM y 10 NM desde LEMU</p>
-    <p id="reloj-utc" style="margin-top:10px; font-size: 14px; font-weight:bold; color:#fbbf24;"></p>
+    <p><span class="badge badge-lemu">LEMU</span> Elev: 475 ft | Rwy 12/30 | 123.500</p>
+    <p><span class="badge badge-ctr">CTR LEAL</span> Techo 1500 ft AGL / TMA</p>
+    <p><span class="badge badge-tra">ZONAS</span> Anillos de referencia: 5 NM y 10 NM</p>
+    <p id="reloj-utc" style="margin-top:8px; font-weight:bold; color:#fbbf24;"></p>
   </div>
 
   <div id="map"></div>
 
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
   <script>
-    const LEMU_COORDS = [38.4392, -0.4742];
-    const LEAL_COORDS = [38.2822, -0.5582];
+    // Coordenadas exactas de LEMU (Mutxamel)
+    const LEMU_COORDS = [38.439, -0.474];
 
+    // Inicializar mapa centrado en LEMU
     const map = L.map('map', {
       zoomControl: false,
       attributionControl: false
-    }).setView([38.39, -0.49], 11);
+    }).setView(LEMU_COORDS, 10);
 
-    // Mapa base limpio con relieve y carreteras principales (OpenTopoMap)
-    L.tileLayer('https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png', {
-      maxZoom: 15
+    // 1. Mapa base limpio
+    L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png', {
+      maxZoom: 16
     }).addTo(map);
 
-    // 1. Polígono aproximado del CTR de Alicante (LEAL) en rojo semitransparente
-    const ctrAlicante = [
-      [38.385, -0.780],
-      [38.415, -0.540],
-      [38.380, -0.350],
-      [38.220, -0.380],
-      [38.120, -0.580],
-      [38.180, -0.780]
-    ];
-
-    L.polygon(ctrAlicante, {
-      color: '#ef4444',
-      weight: 2.5,
-      fillColor: '#ef4444',
-      fillOpacity: 0.18,
-      dashArray: '8, 4'
+    // 2. Capa aeronáutica VFR OpenFlightMaps (Sin API Key)
+    L.tileLayer('https://snapshots.openflightmaps.org/live/latest/tiles/world/noninteractive/epsg3857/merged/512/latest/{z}/{x}/{y}.png', {
+      maxZoom: 12,
+      tileSize: 512,
+      zoomOffset: -1,
+      opacity: 0.85
     }).addTo(map);
 
-    // Etiqueta CTR LEAL
-    L.marker([38.24, -0.56], {
-      icon: L.divIcon({
-        className: 'vfr-label',
-        html: 'CTR ALICANTE (LEAL) - 118.150',
-        iconSize: [165, 20]
-      })
+    // 3. Marcador central en LEMU
+    L.circleMarker(LEMU_COORDS, {
+      radius: 7,
+      fillColor: "#10b981",
+      color: "#000",
+      weight: 2,
+      opacity: 1,
+      fillOpacity: 1
     }).addTo(map);
 
-    // 2. Zona de Tránsito de Aeródromo (ATZ / Circuito LEMU - 3 NM)
+    // Anillo de 5 Millas Náuticas (9260 metros)
     L.circle(LEMU_COORDS, {
-      radius: 5556, // 3 NM
-      color: '#3b82f6',
-      weight: 2.5,
-      fillColor: '#3b82f6',
-      fillOpacity: 0.15
-    }).addTo(map);
-
-    // 3. Anillos de referencia de distancia (5 NM y 10 NM)
-    L.circle(LEMU_COORDS, {
-      radius: 9260, // 5 NM
-      color: '#0f172a',
+      radius: 9260,
+      color: '#0284c7',
       weight: 1.5,
-      dashArray: '5, 5',
+      dashArray: '6, 6',
       fill: false
     }).addTo(map);
 
+    // Anillo de 10 Millas Náuticas (18520 metros)
     L.circle(LEMU_COORDS, {
-      radius: 18520, // 10 NM
-      color: '#0f172a',
+      radius: 18520,
+      color: '#0284c7',
       weight: 1.5,
-      dashArray: '5, 5',
+      dashArray: '6, 6',
       fill: false
     }).addTo(map);
 
-    // 4. Puntos de referencia VFR habituales en entorno LEMU
-    const puntosVFR = [
-      { nombre: 'LEMU (123.500)', coords: LEMU_COORDS, color: '#10b981' },
-      { nombre: 'Embalse Amadorio (E)', coords: [38.525, -0.258], color: '#0284c7' },
-      { nombre: 'Tibi / Maigmó (NW)', coords: [38.515, -0.605], color: '#0284c7' },
-      { nombre: 'Campello / Costa (SE)', coords: [38.425, -0.385], color: '#0284c7' },
-      { nombre: 'Jijona (N)', coords: [38.538, -0.508], color: '#0284c7' }
-    ];
-
-    puntosVFR.forEach(p => {
-      L.circleMarker(p.coords, {
-        radius: 6,
-        fillColor: p.color,
-        color: '#000',
-        weight: 2,
-        fillOpacity: 1
-      }).addTo(map);
-
-      L.marker([p.coords[0] - 0.006, p.coords[1] + 0.008], {
-        icon: L.divIcon({
-          className: 'vfr-label',
-          html: p.nombre,
-          iconSize: [120, 18]
-        })
-      }).addTo(map);
-    });
-
-    // Reloj UTC en tiempo real
+    // Reloj UTC (Zulú)
     function actualizarReloj() {
       const ahora = new Date();
       const utc = ahora.toISOString().substring(11, 19) + ' UTC (Z)';
