@@ -36,6 +36,7 @@
       margin: 0 0 6px 0;
       font-size: 16px;
       color: #38bdf8;
+      letter-spacing: 0.5px;
     }
     .info-panel p {
       margin: 4px 0;
@@ -70,14 +71,16 @@
 
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
   <script>
+    // Coordenadas exactas de LEMU (Mutxamel)
     const LEMU_COORDS = [38.439, -0.474];
 
+    // Inicializar mapa centrado en LEMU
     const map = L.map('map', {
       zoomControl: false,
       attributionControl: false
     }).setView(LEMU_COORDS, 10);
 
-    // 1. Mapa topográfico base limpio
+    // 1. Mapa base limpio
     L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png', {
       maxZoom: 16
     }).addTo(map);
@@ -90,7 +93,7 @@
       opacity: 0.85
     }).addTo(map);
 
-    // Marcador central en LEMU y anillos de distancia (5 NM y 10 NM)
+    // 3. Marcador central en LEMU
     L.circleMarker(LEMU_COORDS, {
       radius: 7,
       fillColor: "#10b981",
@@ -100,6 +103,7 @@
       fillOpacity: 1
     }).addTo(map);
 
+    // Anillo de 5 Millas Náuticas (9260 metros)
     L.circle(LEMU_COORDS, {
       radius: 9260,
       color: '#0284c7',
@@ -108,6 +112,7 @@
       fill: false
     }).addTo(map);
 
+    // Anillo de 10 Millas Náuticas (18520 metros)
     L.circle(LEMU_COORDS, {
       radius: 18520,
       color: '#0284c7',
@@ -116,6 +121,7 @@
       fill: false
     }).addTo(map);
 
+    // Reloj UTC (Zulú)
     function actualizarReloj() {
       const ahora = new Date();
       const utc = ahora.toISOString().substring(11, 19) + ' UTC (Z)';
