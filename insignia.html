@@ -61,7 +61,7 @@
 
   <div class="info-panel">
     <h2>ESPACIO AÉREO LEMU (MUTXAMEL)</h2>
-    <p><span class="badge badge-lemu">LEMU</span> Elev: 499 ft | Rwy 12/30 | 123.500</p>
+    <p><span class="badge badge-lemu">LEMU</span> Elev: 475 ft | Rwy 12/30 | 123.500</p>
     <p><span class="badge badge-ctr">CTR LEAL</span> Techo 1500 ft AGL / TMA</p>
     <p><span class="badge badge-tra">ZONAS</span> Anillos de referencia: 5 NM y 10 NM</p>
     <p id="reloj-utc" style="margin-top:8px; font-weight:bold; color:#fbbf24;"></p>
@@ -80,8 +80,8 @@
       attributionControl: false
     }).setView(LEMU_COORDS, 10);
 
-    // 1. Mapa base limpio
-    L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png', {
+    // 1. Mapa base OpenStreetMap oficial (100% libre, sin API Key)
+    L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
       maxZoom: 16
     }).addTo(map);
 
