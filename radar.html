@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Radar Tráfico Aéreo 2D - LEMU</title>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <style>
+    html, body {
+      margin: 0;
+      padding: 0;
+      width: 100%;
+      height: 100%;
+      background-color: #0b111a;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      overflow: hidden;
+    }
+    #map {
+      width: 100%;
+      height: 100%;
+    }
+    .radar-panel {
+      position: absolute;
+      top: 15px;
+      right: 15px;
+      z-index: 1000;
+      background: rgba(15, 23, 42, 0.92);
+      color: #f8fafc;
+      padding: 14px 18px;
+      border-radius: 8px;
+      border: 1px solid #334155;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.5);
+      min-width: 250px;
+    }
+    .radar-panel h2 {
+      margin: 0 0 6px 0;
+      font-size: 16px;
+      color: #38bdf8;
+    }
+    .radar-panel p {
+      margin: 4px 0;
+      font-size: 13px;
+      color: #cbd5e1;
+    }
+    .plane-label {
+      background: rgba(15, 23, 42, 0.9);
+      border: 1px solid #38bdf8;
+      color: #f8fafc;
+      font-size: 11px;
+      font-weight: bold;
+      padding: 2px 5px;
+      border-radius: 4px;
+      white-space: nowrap;
+      line-height: 1.2;
+    }
+    .plane-alt {
+      color: #fbbf24;
+      font-weight: normal;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="radar-panel">
+    <h2>RADAR TRÁFICO LEMU</h2>
+    <p id="contador">Conectando con OpenSky...</p>
+    <p id="actualizacion" style="font-size: 11px; color: #94a3b8;">Actualiza cada 15s</p>
+  </div>
+
+  <div id="map"></div>
+
+  <script>
+    const LEMU_COORDS = [38.4392, -0.4742];
+
+    const map = L.map('map', {
+      zoomControl: false,
+      attributionControl: false
+    }).setView(LEMU_COORDS, 10);
+
+    // Mapa base estándar ligero
+    L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      maxZoom: 15
+    }).addTo(map);
+
+    // Marcador central LEMU y anillos de 5 NM, 10 NM y 20 NM
+    L.circleMarker(LEMU_COORDS, {
+      radius: 6,
+      fillColor: "#10b981",
+      color: "#000",
+      weight: 2,
+      fillOpacity: 1
+    }).addTo(map);
+
+    [9260, 18520, 37040].forEach(radio => {
+      L.circle(LEMU_COORDS, {
+        radius: radio,
+        color: '#0284c7',
+        weight: 1.5,
+        dashArray: '5, 5',
+        fill: false
+      }).addTo(map);
+    });
+
+    let capaAviones = L.layerGroup().addTo(map);
+
+    function crearIconoAvion(rumbo) {
+      const svg = `
+        <svg width="26" height="26" viewBox="0 0 24 24" style="transform: rotate(${rumbo || 0}deg);">
+          <path fill="#f59e0b" stroke="#000" stroke-width="1.5" d="M21,16V14L13,9V3.5A1.5,1.5 0 0,0 11.5,2A1.5,1.5 0 0,0 10,3.5V9L2,14V16L10,13.5V19L8,20.5V22L11.5,21L15,22V20.5L13,19V13.5L21,16Z" />
+        </svg>`;
+      return L.divIcon({
+        html: svg,
+        className: '',
+        iconSize: [26, 26],
+        iconAnchor: [13, 13]
+      });
+    }
+
+    async function actualizarTrafico() {
+      // Área alrededor de Alicante/Mutxamel
+      const url = 'https://opensky-network.org/api/states/all?lamin=37.80&lomin=-1.20&lamax=39.10&lomax=0.25';
+
+      try {
+        const resp = await fetch(url);
+        if (resp.status === 429) {
+          throw new Error('Pausa por cuota (reintentando en 20s)');
+        }
+        if (!resp.ok) {
+          throw new Error('HTTP ' + resp.status);
+        }
+
+        const datos = await resp.json();
+        capaAviones.clearLayers();
+        const estados = datos.states || [];
+        let enVuelo = 0;
+
+        estados.forEach(avion => {
+          const callsign = (avion[1] || avion[0] || 'N/A').trim();
+          const lon = avion[5];
+          const lat = avion[6];
+          const altMetros = avion[7] || avion[13];
+          const enTierra = avion[8];
+          const velMs = avion[9];
+          const rumbo = avion[10];
+
+          if (lat && lon && !enTierra) {
+            enVuelo++;
+            const altPies = altMetros ? Math.round(altMetros * 3.28084) + ' ft' : '---';
+            const velNudos = velMs ? Math.round(velMs * 1.94384) + ' kt' : '';
+
+            L.marker([lat, lon], { icon: crearIconoAvion(rumbo) }).addTo(capaAviones);
+
+            L.marker([lat, lon], {
+              icon: L.divIcon({
+                className: 'plane-label',
+                html: `${callsign}<br><span class="plane-alt">${altPies} | ${velNudos}</span>`,
+                iconAnchor: [-14, 12]
+              })
+            }).addTo(capaAviones);
+          }
+        });
+
+        document.getElementById('contador').textContent = `Aeronaves en vuelo: ${enVuelo}`;
+        const hora = new Date().toISOString().substring(11, 19) + ' UTC';
+        document.getElementById('actualizacion').textContent = `Último barrido: ${hora}`;
+
+      } catch (error) {
+        document.getElementById('contador').textContent = 'Esperando ventana OpenSky...';
+        document.getElementById('actualizacion').textContent = error.message;
+      }
+    }
+
+    actualizarTrafico();
+    setInterval(actualizarTrafico, 20000);
+  </script>
+</body>
+</html>
